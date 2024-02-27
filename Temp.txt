@@ -1,0 +1,124 @@
+    //    QString menuQss = "QMenuBar{background-color:rgb(50,50,50);}QMenuBar::item{color:rgb(200,200,200)}QMenuBar::selected{background-color:transparent;}";
+    //    QString statusQss = "QStatusBar{background-color:rgb(80,80,80);color:rgb(200,200,200);}";
+    //    QString textQss = "QPlainTextEdit{background-color:rgb(50,50,50);color:rgb(200,200,200);}QScrollBar{background-color:rgb(100,100,100);}";
+    //    QString toolBarQss = "QToolBar{background-color:rgb(50,50,50);}"
+    //                         "QLineEdit{background-color:rgb(100,100,100);color:rgb(225,225,225);}"
+    //                         "QPushButton{border-radius:5px;border-style:flat;background-color:rgb(80,80,80);color:rgb(225,225,225);}"
+    //                         "QPushButton:pressed{background-color:rgb(50,50,50);}"
+    //                         "QToolButton,QCheckBox{color:rgb(225,225,225);}"
+    //                         "QPushButton,QToolButton,QCheckBox{font-family:Consolas;font-size:10pt;}";
+    //    ui->menubar->setStyleSheet(menuQss);
+    //    ui->statusBar->setStyleSheet(statusQss);
+    //    ui->textEdit->setStyleSheet(textQss);
+    //    ui->toolBar->setStyleSheet(toolBarQss);
+
+
+bool MainWindow::eventFilter(QObject* watched, QEvent* event)
+{
+    if (event->type() != QEvent::KeyPress && event->type() != QEvent::Wheel)
+        return QWidget::eventFilter(watched, event);
+
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent* keyevent = static_cast<QKeyEvent*>(event);
+        static int Last_Key;
+        if (keyevent->modifiers() == Qt::ControlModifier && keyevent->key() == Qt::Key_S)
+            saveText(fileName);
+        else if (keyevent->modifiers() == Qt::ControlModifier && keyevent->key() == Qt::Key_F) {
+            ui->actionsearch->setChecked(!ui->actionsearch->isChecked());
+            ui->actionsearch->triggered(ui->actionsearch->isChecked());
+        } else if (keyevent->modifiers() == Qt::ControlModifier && keyevent->key() == Qt::Key_R) {
+            emit btn_run->clicked();
+        } else if (keyevent->key() == Qt::Key_ParenLeft) {
+            ui->textEdit->insertPlainText("()");
+            ui->textEdit->moveCursor(QTextCursor::PreviousCharacter);
+            return true;
+        } else if (keyevent->key() == Qt::Key_BraceLeft) {
+            ui->textEdit->insertPlainText("{}");
+            ui->textEdit->moveCursor(QTextCursor::PreviousCharacter);
+            return true;
+        } else if (keyevent->key() == Qt::Key_BracketLeft) {
+            ui->textEdit->insertPlainText("[]");
+            ui->textEdit->moveCursor(QTextCursor::PreviousCharacter);
+            return true;
+        } else if (keyevent->key() == Qt::Key_QuoteDbl) {
+            ui->textEdit->insertPlainText("\"\"");
+            ui->textEdit->moveCursor(QTextCursor::PreviousCharacter);
+            return true;
+        } else if (keyevent->key() == Qt::Key_Apostrophe) {
+            ui->textEdit->insertPlainText("\'\'");
+            ui->textEdit->moveCursor(QTextCursor::PreviousCharacter);
+            return true;
+        }
+        Last_Key = keyevent->key();
+    } else if (event->type() == QEvent::Wheel) {
+        QWheelEvent* wheelevent = static_cast<QWheelEvent*>(event);
+        if (wheelevent->modifiers() == Qt::ControlModifier) {
+            wheelevent->delta() > 0 ? ui->textEdit->zoomIn() : ui->textEdit->zoomOut();
+            return true; //阻止事件继续传递（给滚动条）
+        }
+    }
+    return QWidget::eventFilter(watched, event);
+}
+
+
+    //    QTimer* timer_line = new QTimer(this);
+    //    connect(timer_line, &QTimer::timeout, [=]() {
+    //        const QTextCursor& textcursor = ui->textEdit->textCursor();
+    //        label_line->setText(
+    //            "SumLines:" + QString::number(ui->textEdit->document()->lineCount()) + " Line:" + QString::number(textcursor.blockNumber() + 1) + " Col:" + QString::number(textcursor.columnNumber()));
+    //    });
+    //    timer_line->start(100);
+
+
+void CodeEditor::drawLineBar(QPaintEvent* event)
+{
+    QPainter painter(LineBar);
+    painter.fillRect(event->rect(), QBrush(QColor(60, 60, 60)));
+
+    QTextBlock block = firstVisibleBlock();
+    int blockNumber = block.blockNumber();
+    int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
+    int bottom = top + qRound(blockBoundingRect(block).height());
+
+    while (block.isValid() && block.isVisible() && top <= event->rect().bottom()) {
+        QString number = QString::number(blockNumber + 1);
+        painter.setPen(QPen(QColor(120, 120, 120)));
+        painter.setFont(font());
+        painter.drawText(0, top, LineBar->width(), fontMetrics().height(), Qt::AlignRight, number);
+
+        block = block.next();
+        top = bottom;
+        bottom = top + qRound(blockBoundingRect(block).height());
+        ++blockNumber;
+    }
+}
+
+
+
+//bool MainWindow::eventFilter(QObject* watched, QEvent* event)
+//{
+//    if (event->type() != QEvent::KeyPress && event->type() != QEvent::Wheel)
+//        return QWidget::eventFilter(watched, event);
+
+//    if (event->type() == QEvent::KeyPress) {
+//        //QKeyEvent* keyevent = static_cast<QKeyEvent*>(event);
+////        if (keyevent->modifiers() == Qt::ControlModifier && keyevent->key() == Qt::Key_S)
+////            saveText(fileName);
+////        else if (keyevent->modifiers() == Qt::ControlModifier && keyevent->key() == Qt::Key_F) {
+////            ui->actionsearch->setChecked(!ui->actionsearch->isChecked());
+////            ui->actionsearch->triggered(ui->actionsearch->isChecked());
+////        } else if (keyevent->modifiers() == Qt::ControlModifier && keyevent->key() == Qt::Key_R && btn_run->isEnabled())
+////            emit btn_run->clicked();
+////        else if (keyevent->modifiers() == Qt::ControlModifier && keyevent->key() == Qt::Key_T && check_tempCpp->isEnabled()) {
+////            check_tempCpp->setChecked(!check_tempCpp->isChecked());
+////            check_tempCpp->toggled(check_tempCpp->isChecked());
+////        }
+//    } else if (event->type() == QEvent::Wheel) {
+//        QWheelEvent* wheelevent = static_cast<QWheelEvent*>(event);
+//        if (wheelevent->modifiers() == Qt::ControlModifier) {
+//            ui->textEdit->zoom(wheelevent->delta());
+//            return true; //阻止事件继续传递（给滚动条）
+//        }
+//    }
+//    return QWidget::eventFilter(watched, event);
+//}

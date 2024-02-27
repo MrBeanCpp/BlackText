@@ -1,0 +1,80 @@
+9-11:
+    目前只支持GBK与UTF-8，其他格式一律结束读取，防止读取保存时改变源文件编码导致Bomb
+    关于为何不遍历所有编码格式，找出合适编码：
+        由于分段读取，导致各段编码不同，导致无法统一，退而求其次
+
+
+9-12:
+    改：存储路径为C盘系统临时文件夹，防止临时文件路径变动
+    注：只是C盘根目录无权限
+    优：操作路径使用原生'/'，输出改为'\\'
+
+    增：新增【另存为】
+    修：优化搜索框显示
+
+9-14:
+    优：优化代码结构，使用QApplication->installeventfilter监听全局事件（快捷键）
+        TextEditor监听自己的键盘事件与滚动条的wheel事件（分工明确）
+        不要都交给MainWindow！
+    改：不使用[setTabStopDistance()]调整Tab宽度//因为ZoomIn后不缩放（固定宽度）
+        改用监听键盘事件[Tab]，直接insertPlainText("    ")//4*' '
+
+9-15:
+    修：将fileName转化为'/'处理
+        修正QTextCodec::ConverterState未更新问题
+
+9-24:
+    修：将system(阻塞)改为ShellExecute(指定父窗口，否则不显示控制台程序窗口(貌似NULL也没事？))
+
+9-25:
+    修：修复字符补全问题
+    改：更改GccPathFile为exe当前目录，防止temp被清理
+    修：修复无限引号问题
+
+10-12:
+    修：用readline代替read读取文件(1024*10 Bytes)，防止read截断中文字符，造成无法判别编码(俗称10K Trap)
+        此bug具有隐蔽性，直到文本超过10K才有几率触发
+        为了优化readline过慢的问题，先readline 100行，再统一解码与insertText
+    修：读取完毕后，emit ui->textEdit->cursorPositionChanged(); //迫使status_update
+
+12-11：
+    增：增加自动换行选项
+    增：增加总是前置选项//setWindowFlag后窗口hide()需要重新show()，改用Win API：SetWindowPos
+
+##2021:
+9/1:
+    优：优化toolBar高度以及控件大小
+    优：在Ctrl+F搜索时，自动转换焦点->搜索框 反之亦然
+    优：调整默认字号(14pt->13pt)与Windows记事本保持一致，保证视觉美观
+    增：增加字体调整菜单
+
+9/2:
+    优：优化加载速度：快速显示，后台加载其余数据(processEvents保证响应)
+    优：控制滑块最小为18px(QSS)
+
+    #缺点：相比Windows记事本 非常占内存 50MB文本需要384MB空间
+
+9/3:
+    增：可保存窗口大小和字体
+    优：优化加载速度，将耗时操作移至界面绘制后
+    优：减少界面加载时白屏时间 快速processEvents
+
+9/4：
+    优：美化滚动条Qss
+    增：加入About
+
+    修：修复全屏状态下储存Size问题
+
+9/14：
+    修：修复前置状态下，对话框被覆盖问题
+
+10-10:
+    Nooo:开机后第一次启动速度慢，大概率是show()的问题，打算打log in disk 然后就变快了，可能是写文件激发了Windows动力...
+
+    优：再Ctrl+F搜索时，自动设置选中文本
+
+10-11：
+    优：在弹出对话框前，前置窗口
+
+10-14：
+    艹 没办法 就是第一次慢 或者很久没用后 打开慢 此后就巨快 Fuck Windows

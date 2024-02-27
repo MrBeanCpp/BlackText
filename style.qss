@@ -1,0 +1,98 @@
+QMainWindow{
+    background-color:rgb(50,50,50);
+}
+QMenuBar{
+    background-color:rgb(50,50,50);
+}
+QMenuBar::item{
+    color:rgb(200,200,200);
+}
+QMenuBar:selected{
+    background-color:transparent;
+}
+QMenu{
+    background-color:rgb(60,60,60);
+    color:rgb(220,220,220);
+    border:2px solid rgb(120, 120, 120);
+}
+QMenu:selected{
+    background-color:rgb(80,80,80);
+}
+QStatusBar{
+    background-color:rgb(80,80,80);
+    color:rgb(200,200,200);
+}
+QPlainTextEdit{
+    background-color:rgb(50,50,50);
+    color:rgb(200,200,200);
+}
+QScrollBar{
+    background-color:rgb(74,74,74);
+}
+QScrollBar:vertical{
+    padding-top:14px;
+    padding-bottom:14px;/*否则定位不精准*/
+    width:14px;
+}
+QScrollBar:horizontal{
+    padding-left:14px;
+    padding-right:14px;
+    height:14px;
+}
+QScrollBar::handle
+{
+    /*background:rgba(60,60,60,0.8);*/
+    background:rgba(55,55,55,0.8);
+    /*border:1px solid rgba(20,20,20,0.8);*/
+    min-height:18px;/*控制滑块最小高度*/
+    margin:2px;
+}
+QScrollBar::handle:hover{
+    background:rgba(46,46,46,0.8);
+}
+QScrollBar::handle:pressed{
+    background:rgba(36,36,36,0.8);
+}
+QScrollBar::sub-line,QScrollBar::add-line{/*箭头*/
+    /*width:0;
+    height:0;*/
+    border:1px solid rgba(20,20,20,0.5);
+}
+QScrollBar::add-page,QScrollBar::sub-page{/*两端到滑块*/
+    background-color:transparent;
+}
+QToolBar{
+    background-color:rgb(50,50,50);
+    border:1px solid rgb(80,80,80);/*注意顺序*/
+}
+QToolBar QLineEdit{
+    background-color:rgb(80,80,80);
+    color:rgb(225,225,225);
+    font-family:Consolas;
+    font-size:12pt;
+}
+QToolBar QPushButton{/*所有QToolBar子部件中的QPushButton*/
+    border-radius:5px;
+    border-style:flat;
+    background-color:rgb(75,75,75);
+    color:rgb(225,225,225);
+}
+QToolBar QPushButton:hover{
+    background-color:rgb(90,90,90);
+}
+QToolBar QPushButton:pressed{/*必须放在hover后面，否则状态被覆盖!!!*/
+    background-color:rgb(55,55,55);
+}
+QToolBar QPushButton,QToolBar QToolButton,QToolBar QCheckBox{
+    color:rgb(225,225,225);
+    font-family:Consolas;
+    font-size:10pt;
+    margin-left:5px;
+    margin-right:5px;
+}
+QStatusBar QLabel{
+    color:rgb(200,200,200);
+}
+QToolBar QCheckBox::indicator:unchecked{
+    background-color:rgb(80,80,80);
+}

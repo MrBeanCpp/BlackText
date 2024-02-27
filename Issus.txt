@@ -1,0 +1,19 @@
+√1.C盘无写入权限
+    open失败应该给提示啊，馬鹿野郎！
+	不过貌似C盘临时文件夹可以写，只是C盘根目录无权限？（试用QDir::tempPath）
+
+√2.textChanged与Title+*统一
+	重写函数进行统一管理
+
+√3.saveText & readText不应该操作fileName，而是用返回值操作fileName，保证独立性
+    Other Solution:引用，直接改fileName
+
+4.使用全局事件过滤器(QApplication)监听键盘事件(快捷键)
+
+√5.增加保持在前!!
+
+6.应该在CodeEditor里写DragDrop事件的呀，我在搞什么!!（好吧当时刚学Qt）
+
+√7.增加自动换行
+
+8.支持更多编码？ GBK和UTF-8没有BOM 其它有
